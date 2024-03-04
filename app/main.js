@@ -12,14 +12,14 @@ const genAI = new GoogleGenerativeAI(process.env.API_KEY);
 let model;
 let chat;
 
-async function connectToGemini() {
+function connectToGemini() {
   model = genAI.getGenerativeModel({ model: "gemini-pro"});
   chat = model.startChat({});
 
   askQuestion();
 }
 
-async function run(msg) {
+async function sendMessage(msg) {
   const result = await chat.sendMessageStream(msg);
   let text = '';
   for await (const chunk of result.stream) {
@@ -30,14 +30,14 @@ async function run(msg) {
   askQuestion();
 }
 
-connectToGemini();
-
 function askQuestion() {
   rl.question('Please enter your prompt: ', (prompt) => {
     if (prompt === 'exit') {
       rl.close();
     } else {
-      run(prompt)
+      sendMessage(prompt)
     }
   });
 }
+
+connectToGemini();
